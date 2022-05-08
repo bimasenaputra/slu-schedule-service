@@ -21,8 +21,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/createSchedule")
-    public ResponseEntity createSchedule(@RequestBody Map<String, Object> schedule) {
-        var user = schedule.get("user").toString();
+    public ResponseEntity createSchedule(@RequestParam(name="uid") String uid, @RequestBody Map<String, Object> schedule) {
         var title = schedule.get("title").toString();
         var startTime = schedule.get("startTime").toString();
         var endTime = schedule.get("endTime").toString();
@@ -33,7 +32,7 @@ public class ScheduleController {
         var newSchedule = new Schedule();
         newSchedule.setId(scheduleService.count()+1);
         newSchedule.setTitle(title);
-        newSchedule.setUser(user);
+        newSchedule.setUser(uid);
         newSchedule.setStartTime(startTime);
         newSchedule.setEndTime(endTime);
         newSchedule.setStartingLoc(startingLoc);
