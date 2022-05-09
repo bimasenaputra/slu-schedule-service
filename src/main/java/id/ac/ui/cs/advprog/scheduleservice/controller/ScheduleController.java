@@ -30,7 +30,6 @@ public class ScheduleController {
         var desc = schedule.get("desc").toString();
 
         var newSchedule = new Schedule();
-        newSchedule.setId(scheduleService.count()+1);
         newSchedule.setTitle(title);
         newSchedule.setUser(uid);
         newSchedule.setStartTime(startTime);

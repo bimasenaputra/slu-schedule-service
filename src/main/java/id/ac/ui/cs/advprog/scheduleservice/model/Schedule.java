@@ -11,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Schedule {
     @Id
+    @GeneratedValue
     @Column(name = "id")
     private Long id;
 

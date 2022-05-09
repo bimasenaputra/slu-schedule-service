@@ -20,10 +20,4 @@ public class ScheduleServiceImpl implements ScheduleService{
     public Iterable<Schedule> getSchedules() {
         return scheduleRepository.findAll();
     }
-
-    @Override
-    public Long count() {
-        return scheduleRepository.count();
-    }
-
 }

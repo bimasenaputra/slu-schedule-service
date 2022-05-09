@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface ScheduleService {
     Schedule createSchedule(Schedule schedule);
     Iterable<Schedule> getSchedules();
-    Long count();
 }
