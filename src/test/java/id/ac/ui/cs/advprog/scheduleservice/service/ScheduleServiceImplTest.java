@@ -56,6 +56,5 @@ public class ScheduleServiceImplTest {
         lenient().when(scheduleService.getSchedules()).thenReturn(scheduleList);
         Iterable<Schedule> scheduleListResult = scheduleService.getSchedules();
         assertIterableEquals(scheduleList, scheduleListResult);
-
     }
 }
