@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface ScheduleService {
     Schedule createSchedule(Schedule schedule);
     Iterable<Schedule> getSchedules();
-    Schedule getScheduleById(int id, String user);
-    List<Schedule> getAllUserSchedule(String user);
+    Optional<Schedule> getScheduleById(Long id);
+    List<Schedule> getAllScheduleUser(String user);
 }

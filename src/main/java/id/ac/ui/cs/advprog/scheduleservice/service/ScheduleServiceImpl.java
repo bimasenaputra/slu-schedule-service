@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService{
@@ -25,12 +26,12 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public Schedule getScheduleById(int id, String user) {
-        return scheduleRepository.findById(id, user);
+    public Optional<Schedule> getScheduleById(Long id) {
+        return scheduleRepository.findById(id);
     }
 
     @Override
-    public List<Schedule> getAllUserSchedule(String user) {
+    public List<Schedule> getAllScheduleUser(String user) {
         List<Schedule> temp = new ArrayList<>();
         for (Schedule i : scheduleRepository.findAll()) {
             if (i.getUser().equals(user)) {

@@ -9,6 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.Mockito.*;
 
@@ -56,5 +59,13 @@ public class ScheduleServiceImplTest {
         lenient().when(scheduleService.getSchedules()).thenReturn(scheduleList);
         Iterable<Schedule> scheduleListResult = scheduleService.getSchedules();
         assertIterableEquals(scheduleList, scheduleListResult);
+    }
+
+    @Test
+    public void getScheduleByIdTest() {
+        lenient().when(scheduleService.getScheduleById(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
+        Optional<Schedule> schedule = scheduleService.getScheduleById(newschedule.getId()) ;
+        assertEquals(schedule.get().getId(), newschedule.getId());
+
     }
 }

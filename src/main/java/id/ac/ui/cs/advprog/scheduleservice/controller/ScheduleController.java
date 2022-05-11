@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class ScheduleController {
@@ -48,20 +49,20 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.getSchedules());
     }
 
-    @GetMapping(path = "/{id}/{user}", produces = {"application/json"})
+    @GetMapping(path = "/{id}", produces = {"application/json"})
     @ResponseBody
-    public ResponseEntity<Schedule> getSchedule(@PathVariable(value = "id") int id, @PathVariable(value = "user") String user) {
-        Schedule schedule = scheduleService.getScheduleById(id, user) ;
+    public ResponseEntity<Optional<Schedule>> getSchedule(@PathVariable(value = "id") Long id) {
+        Optional<Schedule> schedule = scheduleService.getScheduleById(id) ;
         if (schedule == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(schedule);
     }
 
-    @GetMapping(path = "/{user}", produces = {"application/json"})
+    @GetMapping(path = "/getAllSchedule", produces = {"application/json"})
     @ResponseBody
-    public ResponseEntity<List<Schedule>> getAllUserSchedule(@PathVariable(value = "user") String user) {
-        List<Schedule> userSchedules = scheduleService.getAllUserSchedule(user) ;
+    public ResponseEntity<List<Schedule>> getAllScheduleUser(@RequestParam(name="uid") String uid) {
+        List<Schedule> userSchedules = scheduleService.getAllScheduleUser(uid) ;
         return ResponseEntity.ok(userSchedules);
     }
 }
