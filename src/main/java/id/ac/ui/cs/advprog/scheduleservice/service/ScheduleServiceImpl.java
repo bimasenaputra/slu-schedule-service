@@ -5,6 +5,8 @@ import id.ac.ui.cs.advprog.scheduleservice.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ScheduleServiceImpl implements ScheduleService{
 
@@ -20,4 +22,10 @@ public class ScheduleServiceImpl implements ScheduleService{
     public Iterable<Schedule> getSchedules() {
         return scheduleRepository.findAll();
     }
+
+    @Override
+    public Optional<Schedule> getSchedule(Long id) { return scheduleRepository.findById(id); }
+
+    @Override
+    public void deleteSchedule(Schedule schedule) { scheduleRepository.delete(schedule); }
 }
