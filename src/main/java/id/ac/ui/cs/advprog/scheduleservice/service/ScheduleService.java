@@ -9,4 +9,5 @@ public interface ScheduleService {
     Iterable<Schedule> getSchedules();
     Optional<Schedule> getSchedule(Long id);
     void deleteSchedule(Schedule schedule);
+    Schedule updateSchedule(Long id, Schedule schedule);
 }
