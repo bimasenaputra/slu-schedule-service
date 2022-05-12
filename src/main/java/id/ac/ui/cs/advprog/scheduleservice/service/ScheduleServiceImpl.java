@@ -28,4 +28,10 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public void deleteSchedule(Schedule schedule) { scheduleRepository.delete(schedule); }
+
+    @Override
+    public Schedule updateSchedule(Long id, Schedule schedule) {
+        schedule.setId(id);
+        return scheduleRepository.save(schedule);
+    }
 }

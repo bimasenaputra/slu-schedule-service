@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,5 +57,18 @@ public class ScheduleServiceImplTest {
         Iterable<Schedule> scheduleListResult = scheduleService.getSchedules();
         assertIterableEquals(scheduleList, scheduleListResult);
 
+    }
+
+    @Test
+    public void updateScheduleTest() {
+        String pastTitle = newschedule.getTitle();
+        String newTitle = "Test Update";
+        newschedule.setTitle(newTitle);
+
+        lenient().when(scheduleService.updateSchedule(newschedule.getId(), newschedule)).thenReturn(newschedule);
+        Schedule scheduleResult = scheduleService.updateSchedule(newschedule.getId(), newschedule);
+
+        assertEquals(scheduleResult.getId(), newschedule.getId());
+        assertNotEquals(scheduleResult.getTitle(), pastTitle);
     }
 }
