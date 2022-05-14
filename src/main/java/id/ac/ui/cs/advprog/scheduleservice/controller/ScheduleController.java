@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -52,11 +53,17 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable String id, @RequestParam(name = "uid") String uid) {
-        var schedule = scheduleService.getSchedule(Long.parseLong(id));
-        if (schedule.isEmpty() || !schedule.get().getUser().equals(uid)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        CompletableFuture.runAsync(() -> scheduleService.deleteSchedule(schedule.get()));
+        CompletableFuture.supplyAsync(() -> scheduleService.getSchedule(Long.parseLong(id)))
+                .thenAccept(scheduleOpt -> {
+                    var schedule = scheduleOpt.orElse(null);
+                    assert schedule != null;
+                    if (schedule.getUser().equals(uid)) scheduleService.deleteSchedule(schedule);
+                    else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                })
+                .exceptionallyAsync(ex -> {
+                    System.out.println("Error delete: " + ex.getMessage());
+                    return null;
+                });
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

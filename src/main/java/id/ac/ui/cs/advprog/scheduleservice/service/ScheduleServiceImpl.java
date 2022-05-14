@@ -29,10 +29,10 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public Optional<Schedule> getSchedule(Long id) { return scheduleRepository.findById(id); }
+    public Optional<Schedule> getSchedule(Long id) throws IllegalArgumentException { return scheduleRepository.findById(id); }
 
     @Override
-    public void deleteSchedule(Schedule schedule) { scheduleRepository.delete(schedule); }
+    public void deleteSchedule(Schedule schedule) throws IllegalArgumentException { scheduleRepository.delete(schedule); }
 
     @Override
     public Schedule updateSchedule(Long id, Schedule schedule) {

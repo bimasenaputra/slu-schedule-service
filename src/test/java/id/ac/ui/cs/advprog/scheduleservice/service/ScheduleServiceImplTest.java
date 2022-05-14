@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,12 +63,31 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
+    public void getUserSchedulesTest() {
+        List<Schedule> schedulesMock = new ArrayList<>();
+        Schedule scheduleMock = new Schedule();
+        String uid = anyString();
+        scheduleMock.setUser(uid);
+        schedulesMock.add(scheduleMock);
+        Iterable<Schedule> schedulesIterMock = schedulesMock;
+        lenient().when(scheduleService.getUserSchedules(uid)).thenReturn(schedulesIterMock);
+        Iterable<Schedule> schedulesReturn = scheduleService.getUserSchedules(uid);
+        assertIterableEquals(schedulesIterMock, schedulesReturn);
+    }
+
+    @Test
     public void getScheduleByIdTest() {
         lenient().when(scheduleService.getSchedule(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
         Optional<Schedule> schedule = scheduleService.getSchedule(newschedule.getId()) ;
         assertEquals(schedule.get().getId(), newschedule.getId());
     }
 
+    @Test
+    public void deleteScheduleTest(){
+        Schedule scheduleMock = new Schedule(9999L,"id","title","startTime","endTime","startingLoc","destination","desc");
+        scheduleService.deleteSchedule(scheduleMock);
+        verify(scheduleRepository).delete(scheduleMock);
+    }
 
     @Test
     public void updateScheduleTest() {
