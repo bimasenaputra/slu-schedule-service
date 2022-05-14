@@ -8,10 +8,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -63,6 +66,12 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
+    public void getScheduleByIdTest() {
+        lenient().when(scheduleService.getScheduleById(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
+        Optional<Schedule> schedule = scheduleService.getScheduleById(newschedule.getId());
+        assertEquals(schedule.get().getId(), newschedule.getId());
+    }
+
     public void getUserSchedulesTest() {
         List<Schedule> schedulesMock = new ArrayList<>();
         Schedule scheduleMock = new Schedule();
@@ -73,13 +82,6 @@ public class ScheduleServiceImplTest {
         lenient().when(scheduleService.getUserSchedules(uid)).thenReturn(schedulesIterMock);
         Iterable<Schedule> schedulesReturn = scheduleService.getUserSchedules(uid);
         assertIterableEquals(schedulesIterMock, schedulesReturn);
-    }
-
-    @Test
-    public void getScheduleByIdTest() {
-        lenient().when(scheduleService.getSchedule(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
-        Optional<Schedule> schedule = scheduleService.getSchedule(newschedule.getId()) ;
-        assertEquals(schedule.get().getId(), newschedule.getId());
     }
 
     @Test
@@ -106,9 +108,7 @@ public class ScheduleServiceImplTest {
     public void checkUserScheduleTimeTest() {
         String startTime = "2022-05-10T17:02";
         String uid = "testestest";
-
         boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
-
         assertEquals(result, true);
 
     }
