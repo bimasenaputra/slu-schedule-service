@@ -36,6 +36,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.createSchedule(newSchedule));
     }
 
+    @GetMapping(path = {"/getAll"}, produces = {"application/json"})
+    public ResponseEntity<Iterable<Schedule>> getAllSchedule(){
+        return ResponseEntity.ok(scheduleService.getSchedules());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Schedule> getSchedule(@PathVariable String id, @RequestParam(name="uid") String uid) {
         var schedule = scheduleService.getSchedule(Long.parseLong(id));
