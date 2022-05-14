@@ -8,11 +8,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -24,7 +27,7 @@ public class ScheduleServiceImplTest {
     @InjectMocks
     private ScheduleServiceImpl scheduleService;
 
-    private Schedule newschedule = new Schedule();
+    private final Schedule newschedule = new Schedule();
 
     @BeforeEach
     public void setup() {
@@ -40,7 +43,7 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void createScheduleTest() throws Exception {
+    public void createScheduleTest() {
         Schedule schedule = new Schedule();
         schedule.setTitle("Test");
         schedule.setUser("testestest");
@@ -65,11 +68,28 @@ public class ScheduleServiceImplTest {
     @Test
     public void getScheduleByIdTest() {
         lenient().when(scheduleService.getScheduleById(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
-        Optional<Schedule> schedule = scheduleService.getScheduleById(newschedule.getId()) ;
+        Optional<Schedule> schedule = scheduleService.getScheduleById(newschedule.getId());
         assertEquals(schedule.get().getId(), newschedule.getId());
-
     }
 
+    public void getUserSchedulesTest() {
+        List<Schedule> schedulesMock = new ArrayList<>();
+        Schedule scheduleMock = new Schedule();
+        String uid = anyString();
+        scheduleMock.setUser(uid);
+        schedulesMock.add(scheduleMock);
+        Iterable<Schedule> schedulesIterMock = schedulesMock;
+        lenient().when(scheduleService.getUserSchedules(uid)).thenReturn(schedulesIterMock);
+        Iterable<Schedule> schedulesReturn = scheduleService.getUserSchedules(uid);
+        assertIterableEquals(schedulesIterMock, schedulesReturn);
+    }
+
+    @Test
+    public void deleteScheduleTest(){
+        Schedule scheduleMock = new Schedule(9999L,"id","title","startTime","endTime","startingLoc","destination","desc");
+        scheduleService.deleteSchedule(scheduleMock);
+        verify(scheduleRepository).delete(scheduleMock);
+    }
 
     @Test
     public void updateScheduleTest() {
@@ -82,5 +102,14 @@ public class ScheduleServiceImplTest {
 
         assertEquals(scheduleResult.getId(), newschedule.getId());
         assertNotEquals(scheduleResult.getTitle(), pastTitle);
+    }
+
+    @Test
+    public void checkUserScheduleTimeTest() {
+        String startTime = "2022-05-10T17:02";
+        String uid = "testestest";
+        boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
+        assertEquals(result, true);
+
     }
 }

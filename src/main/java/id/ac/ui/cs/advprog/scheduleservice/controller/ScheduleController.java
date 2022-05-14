@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
+
 
     @PostMapping("/test")
     public ResponseEntity<String> test(@RequestParam(name = "uid") String uid, @RequestBody String s) {
@@ -53,11 +55,17 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable String id, @RequestParam(name = "uid") String uid) {
-        var schedule = scheduleService.getSchedule(Long.parseLong(id));
-        if (schedule.isEmpty() || !schedule.get().getUser().equals(uid)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        CompletableFuture.runAsync(() -> scheduleService.deleteSchedule(schedule.get()));
+        CompletableFuture.supplyAsync(() -> scheduleService.getSchedule(Long.parseLong(id)))
+                .thenAccept(scheduleOpt -> {
+                    var schedule = scheduleOpt.orElse(null);
+                    assert schedule != null;
+                    if (schedule.getUser().equals(uid)) scheduleService.deleteSchedule(schedule);
+                    else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                })
+                .exceptionallyAsync(ex -> {
+                    System.out.println("Error delete: " + ex.getMessage());
+                    return null;
+                });
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -98,11 +106,24 @@ public class ScheduleController {
         return ResponseEntity.ok(schedule);
     }
 
+
     @GetMapping(path = "/getAllSchedule", produces = {"application/json"})
     @ResponseBody
     public ResponseEntity<List<Schedule>> getAllScheduleUser(@RequestParam(name = "uid") String uid) {
         List<Schedule> userSchedules = scheduleService.getAllScheduleUser(uid);
         return ResponseEntity.ok(userSchedules);
+    }
+
+    @GetMapping("/schedules")
+    public ResponseEntity<Iterable<Schedule>> getAllSchedule(@RequestParam(name="uid") String uid) {
+        return ResponseEntity.ok(scheduleService.getUserSchedules(uid));
+    }
+
+    @GetMapping(path = "/checkSchedTime/{startTime}", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<Boolean> checkSchedTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime) {
+        boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
+        return ResponseEntity.ok(result);
     }
 
 }

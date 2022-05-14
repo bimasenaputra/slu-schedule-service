@@ -27,14 +27,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
 
-    public Optional<Schedule> getSchedule(Long id) {
-        return scheduleRepository.findById(id);
+    @Override
+    public Iterable<Schedule> getUserSchedules(String user) {
+        return scheduleRepository.findAllByUser(user);
     }
 
     @Override
-    public void deleteSchedule(Schedule schedule) {
-        scheduleRepository.delete(schedule);
-    }
+    public Optional<Schedule> getSchedule(Long id) throws IllegalArgumentException { return scheduleRepository.findById(id); }
+
+    @Override
+    public void deleteSchedule(Schedule schedule) throws IllegalArgumentException { scheduleRepository.delete(schedule); }
+
 
     @Override
     public Schedule updateSchedule(Long id, Schedule schedule) {
@@ -42,6 +45,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.save(schedule);
 
     }
+
 
     public Optional<Schedule> getScheduleById(Long id) {
         return scheduleRepository.findById(id);
@@ -56,6 +60,18 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
         return temp;
+    }
+
+
+    @Override
+    public boolean checkUserScheduleTime(String startTime, String uid) {
+        for (Schedule schedule : scheduleRepository.findAll()) {
+            if (schedule.getUser().equals(uid)) {
+                if (schedule.getStartTime().compareTo(startTime) == 0)
+                    return false;
+            }
+        }
+        return true;
     }
 
 }
