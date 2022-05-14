@@ -90,4 +90,11 @@ public class ScheduleController {
     public ResponseEntity<Iterable<Schedule>> getAllSchedule(@RequestParam(name="uid") String uid) {
         return ResponseEntity.ok(scheduleService.getUserSchedules(uid));
     }
+
+    @GetMapping(path = "/checkSchedTime/{startTime}", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<Boolean> checkSchedTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime) {
+        boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
+        return ResponseEntity.ok(result);
+    }
 }

@@ -40,5 +40,14 @@ public class ScheduleServiceImpl implements ScheduleService{
         return scheduleRepository.save(schedule);
     }
 
-
+    @Override
+    public boolean checkUserScheduleTime(String startTime, String uid) {
+        for (Schedule schedule : scheduleRepository.findAll()) {
+            if (schedule.getUser().equals(uid)) {
+                if (schedule.getStartTime().compareTo(startTime) == 0)
+                    return false;
+            }
+        }
+        return true;
+    }
 }
