@@ -24,6 +24,11 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
+    public Iterable<Schedule> getUserSchedules(String user) {
+        return scheduleRepository.findAllByUser(user);
+    }
+
+    @Override
     public Optional<Schedule> getSchedule(Long id) { return scheduleRepository.findById(id); }
 
     @Override
@@ -34,4 +39,6 @@ public class ScheduleServiceImpl implements ScheduleService{
         schedule.setId(id);
         return scheduleRepository.save(schedule);
     }
+
+
 }

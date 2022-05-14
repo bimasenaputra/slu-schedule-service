@@ -15,13 +15,6 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @PostMapping("/test")
-    public ResponseEntity<String> test(@RequestParam(name="uid") String uid, @RequestBody String s) {
-        System.out.println("uid: " + uid);
-        System.out.println("msg: " + s);
-        return ResponseEntity.ok("berhasil");
-    }
-
     @PostMapping("/createSchedule")
     public ResponseEntity createSchedule(@RequestParam(name="uid") String uid, @RequestBody Map<String, Object> schedule) {
         var title = schedule.get("title").toString();
@@ -91,5 +84,10 @@ public class ScheduleController {
         updatedSchedule.setDesc(desc);
 
         return ResponseEntity.ok(scheduleService.updateSchedule(Long.parseLong(id), updatedSchedule));
+    }
+
+    @GetMapping("/schedules")
+    public ResponseEntity<Iterable<Schedule>> getAllSchedule(@RequestParam(name="uid") String uid) {
+        return ResponseEntity.ok(scheduleService.getUserSchedules(uid));
     }
 }

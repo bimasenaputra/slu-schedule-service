@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,7 +22,7 @@ public class ScheduleServiceImplTest {
     @InjectMocks
     private ScheduleServiceImpl scheduleService;
 
-    private Schedule newschedule = new Schedule();
+    private final Schedule newschedule = new Schedule();
 
     @BeforeEach
     public void setup() {
@@ -36,7 +38,7 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void createScheduleTest() throws Exception {
+    public void createScheduleTest() {
         Schedule schedule = new Schedule();
         schedule.setTitle("Test");
         schedule.setUser("testestest");
@@ -56,8 +58,15 @@ public class ScheduleServiceImplTest {
         lenient().when(scheduleService.getSchedules()).thenReturn(scheduleList);
         Iterable<Schedule> scheduleListResult = scheduleService.getSchedules();
         assertIterableEquals(scheduleList, scheduleListResult);
-
     }
+
+    @Test
+    public void getScheduleByIdTest() {
+        lenient().when(scheduleService.getSchedule(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
+        Optional<Schedule> schedule = scheduleService.getSchedule(newschedule.getId()) ;
+        assertEquals(schedule.get().getId(), newschedule.getId());
+    }
+
 
     @Test
     public void updateScheduleTest() {
