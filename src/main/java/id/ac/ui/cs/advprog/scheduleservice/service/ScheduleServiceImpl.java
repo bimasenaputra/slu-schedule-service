@@ -38,30 +38,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void deleteSchedule(Schedule schedule) throws IllegalArgumentException { scheduleRepository.delete(schedule); }
 
-
     @Override
     public Schedule updateSchedule(Long id, Schedule schedule) {
         schedule.setId(id);
         return scheduleRepository.save(schedule);
-
     }
-
-
-    public Optional<Schedule> getScheduleById(Long id) {
-        return scheduleRepository.findById(id);
-    }
-
-    @Override
-    public List<Schedule> getAllScheduleUser(String user) {
-        List<Schedule> temp = new ArrayList<>();
-        for (Schedule i : scheduleRepository.findAll()) {
-            if (i.getUser().equals(user)) {
-                temp.add(i);
-            }
-        }
-        return temp;
-    }
-
 
     @Override
     public boolean checkUserScheduleTime(String startTime, String uid) {

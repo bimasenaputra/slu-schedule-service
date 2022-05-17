@@ -67,21 +67,21 @@ public class ScheduleServiceImplTest {
 
     @Test
     public void getScheduleByIdTest() {
-        lenient().when(scheduleService.getScheduleById(newschedule.getId())).thenReturn(Optional.ofNullable(newschedule));
-        Optional<Schedule> schedule = scheduleService.getScheduleById(newschedule.getId());
+        lenient().when(scheduleService.getSchedule(newschedule.getId())).thenReturn(Optional.of(newschedule));
+        Optional<Schedule> schedule = scheduleService.getSchedule(newschedule.getId());
         assertEquals(schedule.get().getId(), newschedule.getId());
     }
 
+    @Test
     public void getUserSchedulesTest() {
         List<Schedule> schedulesMock = new ArrayList<>();
         Schedule scheduleMock = new Schedule();
         String uid = anyString();
         scheduleMock.setUser(uid);
         schedulesMock.add(scheduleMock);
-        Iterable<Schedule> schedulesIterMock = schedulesMock;
-        lenient().when(scheduleService.getUserSchedules(uid)).thenReturn(schedulesIterMock);
+        lenient().when(scheduleService.getUserSchedules(uid)).thenReturn(schedulesMock);
         Iterable<Schedule> schedulesReturn = scheduleService.getUserSchedules(uid);
-        assertIterableEquals(schedulesIterMock, schedulesReturn);
+        assertIterableEquals(schedulesMock, schedulesReturn);
     }
 
     @Test
