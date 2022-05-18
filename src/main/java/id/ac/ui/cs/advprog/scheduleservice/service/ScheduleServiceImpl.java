@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -17,7 +18,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private ScheduleRepository scheduleRepository;
 
     @Override
-    public Schedule createSchedule(Schedule schedule) {
+    public Schedule createSchedule(Schedule schedule) throws IllegalArgumentException {
         return scheduleRepository.save(schedule);
     }
 
@@ -46,13 +47,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public boolean checkUserScheduleTime(String startTime, String uid) {
-        for (Schedule schedule : scheduleRepository.findAll()) {
-            if (schedule.getUser().equals(uid)) {
-                if (schedule.getStartTime().compareTo(startTime) == 0)
-                    return false;
-            }
-        }
-        return true;
+        var userSchedule = getUserSchedules(uid);
+        return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0);
     }
 
 }
