@@ -145,7 +145,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void updatePatientRecord_success() throws Exception {
+    public void updateSchedule_success() throws Exception {
         var updatedRecord = new Schedule();
         updatedRecord.setTitle("Test3");
         updatedRecord.setUser(schedule1.getUser());
@@ -170,7 +170,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void updatePatientRecord_fail() throws Exception {
+    public void updateScheduleRecord_fail() throws Exception {
         var updatedRecord = new Schedule();
         updatedRecord.setTitle("Test3");
         updatedRecord.setUser(schedule1.getUser());

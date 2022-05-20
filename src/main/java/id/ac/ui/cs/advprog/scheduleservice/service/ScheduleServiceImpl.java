@@ -14,8 +14,11 @@ import java.util.stream.StreamSupport;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
+
+    public ScheduleServiceImpl(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
+    }
 
     @Override
     public Schedule createSchedule(Schedule schedule) throws IllegalArgumentException {
