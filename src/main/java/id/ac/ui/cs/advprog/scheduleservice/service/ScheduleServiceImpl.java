@@ -2,22 +2,24 @@ package id.ac.ui.cs.advprog.scheduleservice.service;
 
 import id.ac.ui.cs.advprog.scheduleservice.model.Schedule;
 import id.ac.ui.cs.advprog.scheduleservice.repository.ScheduleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    @Autowired
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
+
+    public ScheduleServiceImpl(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
+    }
 
     @Override
-    public Schedule createSchedule(Schedule schedule) {
+    public Schedule createSchedule(Schedule schedule) throws IllegalArgumentException {
         return scheduleRepository.save(schedule);
     }
 
@@ -46,13 +48,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public boolean checkUserScheduleTime(String startTime, String uid) {
-        for (Schedule schedule : scheduleRepository.findAll()) {
-            if (schedule.getUser().equals(uid)) {
-                if (schedule.getStartTime().compareTo(startTime) == 0)
-                    return false;
-            }
-        }
-        return true;
+        var userSchedule = getUserSchedules(uid);
+        return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0);
+    }
+
+    @Override
+    public boolean checkUpdateUserScheduleTime(String startTime, String uid, Long sid) {
+        var userSchedule = getUserSchedules(uid);
+        return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0 && !Objects.equals(schedule.getId(), sid));
     }
 
 }

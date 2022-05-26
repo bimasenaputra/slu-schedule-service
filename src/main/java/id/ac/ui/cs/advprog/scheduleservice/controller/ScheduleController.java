@@ -2,45 +2,72 @@ package id.ac.ui.cs.advprog.scheduleservice.controller;
 
 import id.ac.ui.cs.advprog.scheduleservice.model.Schedule;
 import id.ac.ui.cs.advprog.scheduleservice.service.ScheduleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 
 @RestController
 public class ScheduleController {
-    @Autowired
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
-    @PostMapping("/createSchedule")
-    public ResponseEntity createSchedule(@RequestParam(name = "uid") String uid, @RequestBody Map<String, Object> schedule) {
-        var title = schedule.get("title").toString();
-        var startTime = schedule.get("startTime").toString();
-        var endTime = schedule.get("endTime").toString();
-        var startingLoc = schedule.get("startingLoc").toString();
-        var destination = schedule.get("destination").toString();
-        var desc = schedule.get("desc").toString();
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
 
-        var newSchedule = new Schedule();
-        newSchedule.setTitle(title);
-        newSchedule.setUser(uid);
-        newSchedule.setStartTime(startTime);
-        newSchedule.setEndTime(endTime);
-        newSchedule.setStartingLoc(startingLoc);
-        newSchedule.setDestination(destination);
-        newSchedule.setDesc(desc);
+    @GetMapping(path = {"/all"}, produces = {"application/json"})
+    public ResponseEntity<Iterable<Schedule>> getAllSchedule() {
+        return ResponseEntity.ok(scheduleService.getSchedules());
+    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Schedule> getSchedule(@PathVariable String id, @RequestParam(name="uid") String uid) {
+        var schedule = scheduleService.getSchedule(Long.parseLong(id));
+        if (schedule.isEmpty() || !schedule.get().getUser().equals(uid)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(schedule.get());
+    }
+
+    @GetMapping("/schedules")
+    public ResponseEntity<Iterable<Schedule>> getUserSchedules(@RequestParam(name="uid") String uid) {
+        return ResponseEntity.ok(scheduleService.getUserSchedules(uid));
+    }
+
+    @GetMapping(path = "/filter/{startTime}", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<Boolean> checkScheduleTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime) {
+        boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(path = "/filter/{startTime}/{sid}", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<Boolean> checkUpdateScheduleTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime, @PathVariable(value="sid") String sid) {
+        boolean result = scheduleService.checkUpdateUserScheduleTime(startTime, uid, Long.parseLong(sid));
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Schedule> createSchedule(@RequestParam(name = "uid") String uid, @RequestBody Schedule schedule) {
+        var newSchedule = createNewSchedule(uid, schedule);
         return ResponseEntity.ok(scheduleService.createSchedule(newSchedule));
     }
 
-    @GetMapping(path = {"/getAll"}, produces = {"application/json"})
-    public ResponseEntity<Iterable<Schedule>> getAllSchedule() {
-        return ResponseEntity.ok(scheduleService.getSchedules());
+    @PutMapping("/{id}")
+    public ResponseEntity<Schedule> updateSchedule(@PathVariable String id, @RequestParam(name = "uid") String uid, @RequestBody Schedule schedule) {
+        var getSchedule = scheduleService.getSchedule(Long.parseLong(id));
+        if (getSchedule.isEmpty() || !getSchedule.get().getUser().equals(uid)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        var updatedSchedule = createNewSchedule(uid, schedule);
+
+        return ResponseEntity.ok(scheduleService.updateSchedule(Long.parseLong(id), updatedSchedule));
+
     }
 
     @DeleteMapping("/{id}")
@@ -59,52 +86,23 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Schedule> updateSchedule(@PathVariable String id, @RequestParam(name = "uid") String uid, @RequestBody Map<String, Object> schedule) {
-        var getSchedule = scheduleService.getSchedule(Long.parseLong(id));
-        if (getSchedule.isEmpty() || !getSchedule.get().getUser().equals(uid)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    private Schedule createNewSchedule(@RequestParam(name = "uid") String uid, @RequestBody Schedule schedule) {
+        var title = schedule.getTitle();
+        var startTime = schedule.getStartTime();
+        var endTime = schedule.getEndTime();
+        var startingLoc = schedule.getStartingLoc();
+        var destination = schedule.getDestination();
+        var desc = schedule.getDesc();
 
-        var title = schedule.get("title").toString();
-        var startTime = schedule.get("startTime").toString();
-        var endTime = schedule.get("endTime").toString();
-        var startingLoc = schedule.get("startingLoc").toString();
-        var destination = schedule.get("destination").toString();
-        var desc = schedule.get("desc").toString();
-
-        var updatedSchedule = new Schedule();
-        updatedSchedule.setTitle(title);
-        updatedSchedule.setUser(uid);
-        updatedSchedule.setStartTime(startTime);
-        updatedSchedule.setEndTime(endTime);
-        updatedSchedule.setStartingLoc(startingLoc);
-        updatedSchedule.setDestination(destination);
-        updatedSchedule.setDesc(desc);
-
-        return ResponseEntity.ok(scheduleService.updateSchedule(Long.parseLong(id), updatedSchedule));
-
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Schedule> getSchedule(@PathVariable String id, @RequestParam(name="uid") String uid) {
-        var schedule = scheduleService.getSchedule(Long.parseLong(id));
-        if (schedule.isEmpty() || !schedule.get().getUser().equals(uid)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(schedule.get());
-    }
-
-    @GetMapping("/schedules")
-    public ResponseEntity<Iterable<Schedule>> getAllSchedule(@RequestParam(name="uid") String uid) {
-        return ResponseEntity.ok(scheduleService.getUserSchedules(uid));
-    }
-
-    @GetMapping(path = "/checkSchedTime/{startTime}", produces = {"application/json"})
-    @ResponseBody
-    public ResponseEntity<Boolean> checkSchedTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime) {
-        boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
-        return ResponseEntity.ok(result);
+        var newSchedule = new Schedule();
+        newSchedule.setTitle(title);
+        newSchedule.setUser(uid);
+        newSchedule.setStartTime(startTime);
+        newSchedule.setEndTime(endTime);
+        newSchedule.setStartingLoc(startingLoc);
+        newSchedule.setDestination(destination);
+        newSchedule.setDesc(desc);
+        return newSchedule;
     }
 
 }

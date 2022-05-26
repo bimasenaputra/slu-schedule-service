@@ -10,4 +10,8 @@ class ScheduleServiceApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    public void main() {
+        ScheduleServiceApplication.main(new String[] {});
+    }
 }
