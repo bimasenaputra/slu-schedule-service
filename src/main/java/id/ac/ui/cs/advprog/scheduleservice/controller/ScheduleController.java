@@ -44,6 +44,13 @@ public class ScheduleController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping(path = "/filter/{startTime}/{sid}", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<Boolean> checkUpdateScheduleTime(@RequestParam(name="uid") String uid, @PathVariable(value = "startTime") String startTime, @PathVariable(value="sid") String sid) {
+        boolean result = scheduleService.checkUpdateUserScheduleTime(startTime, uid, Long.parseLong(sid));
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Schedule> createSchedule(@RequestParam(name = "uid") String uid, @RequestBody Schedule schedule) {
         var newSchedule = createNewSchedule(uid, schedule);
