@@ -2,12 +2,10 @@ package id.ac.ui.cs.advprog.scheduleservice.service;
 
 import id.ac.ui.cs.advprog.scheduleservice.model.Schedule;
 import id.ac.ui.cs.advprog.scheduleservice.repository.ScheduleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -52,6 +50,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     public boolean checkUserScheduleTime(String startTime, String uid) {
         var userSchedule = getUserSchedules(uid);
         return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0);
+    }
+
+    @Override
+    public boolean checkUpdateUserScheduleTime(String startTime, String uid, Long sid) {
+        var userSchedule = getUserSchedules(uid);
+        return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0 && !Objects.equals(schedule.getId(), sid));
     }
 
 }

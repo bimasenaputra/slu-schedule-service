@@ -121,6 +121,18 @@ public class ScheduleControllerTest {
     }
 
     @Test
+    public void checkUpdateScheduleTime_success() throws Exception {
+        Mockito.when(scheduleService.checkUpdateUserScheduleTime(schedule2.getStartTime(), schedule2.getUser(), schedule1.getId())).thenReturn(false);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/filter/"+schedule2.getStartTime()+"/"+schedule1.getId().toString()+"?uid="+schedule2.getUser())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$", is(false)));
+    }
+
+    @Test
     public void createSchedule_success() throws Exception {
         var newRecord = new Schedule();
         newRecord.setTitle(schedule1.getTitle());
