@@ -52,4 +52,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0);
     }
 
+    @Override
+    public boolean checkUpdateUserScheduleTime(String startTime, String uid, Long sid) {
+        var userSchedule = getUserSchedules(uid);
+        return StreamSupport.stream(userSchedule.spliterator(), true).noneMatch(schedule -> schedule.getStartTime().compareTo(startTime) == 0 && !Objects.equals(schedule.getId(), sid));
+    }
+
 }

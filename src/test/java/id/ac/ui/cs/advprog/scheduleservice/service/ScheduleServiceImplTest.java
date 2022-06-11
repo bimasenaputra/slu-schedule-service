@@ -112,4 +112,13 @@ class ScheduleServiceImplTest {
         assertEquals(true, result);
 
     }
+
+    @Test
+    public void checkUpdateUserScheduleTimeTest() {
+        String startTime = "2022-05-10T17:03";
+        String uid = "testestest";
+        boolean result = scheduleService.checkUpdateUserScheduleTime(startTime, uid, newschedule.getId());
+        assertEquals(result, true);
+
+    }
 }
