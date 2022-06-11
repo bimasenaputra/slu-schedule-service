@@ -12,4 +12,6 @@ public interface ScheduleService {
     Schedule updateSchedule(Long id, Schedule schedule);
     Iterable<Schedule> getUserSchedules(String user);
     boolean checkUserScheduleTime(String startTime, String uid);
+
+    boolean checkUpdateUserScheduleTime(String startTime, String uid, Long sid);
 }
