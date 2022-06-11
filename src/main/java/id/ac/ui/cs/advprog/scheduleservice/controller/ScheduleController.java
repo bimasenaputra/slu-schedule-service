@@ -79,10 +79,10 @@ public class ScheduleController {
                     if (schedule.getUser().equals(uid)) scheduleService.deleteSchedule(schedule);
                     else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 })
-                .exceptionallyAsync(ex -> {
-                    System.out.println("Error delete: " + ex.getMessage());
-                    return null;
-                });
+                .exceptionallyAsync(ex ->
+
+                    null
+                );
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

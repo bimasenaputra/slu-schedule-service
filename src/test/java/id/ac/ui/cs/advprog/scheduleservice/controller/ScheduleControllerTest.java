@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ScheduleController.class)
-public class ScheduleControllerTest {
+class ScheduleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -59,7 +59,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void getAllSchedule_success() throws Exception {
+    void getAllSchedule_success() throws Exception {
         Iterable<Schedule> records = new ArrayList<>(Arrays.asList(schedule1, schedule2));
 
         Mockito.when(scheduleService.getSchedules()).thenReturn(records);
@@ -73,7 +73,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void getUserSchedules_success() throws Exception {
+    void getUserSchedules_success() throws Exception {
         Iterable<Schedule> records = new ArrayList<>(Arrays.asList(schedule1));
 
         Mockito.when(scheduleService.getUserSchedules(schedule1.getUser())).thenReturn(records);
@@ -87,7 +87,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void getScheduleById_success() throws Exception {
+    void getScheduleById_success() throws Exception {
         Mockito.when(scheduleService.getSchedule(schedule1.getId())).thenReturn(java.util.Optional.of(schedule1));
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -99,7 +99,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void getScheduleById_fail() throws Exception {
+    void getScheduleById_fail() throws Exception {
         Mockito.when(scheduleService.getSchedule(schedule1.getId())).thenReturn(java.util.Optional.of(schedule1));
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -109,7 +109,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void checkScheduleTime_success() throws Exception {
+    void checkScheduleTime_success() throws Exception {
         Mockito.when(scheduleService.checkUserScheduleTime(schedule2.getStartTime(), schedule2.getUser())).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -121,19 +121,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void checkUpdateScheduleTime_success() throws Exception {
-        Mockito.when(scheduleService.checkUpdateUserScheduleTime(schedule2.getStartTime(), schedule2.getUser(), schedule1.getId())).thenReturn(false);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/filter/"+schedule2.getStartTime()+"/"+schedule1.getId().toString()+"?uid="+schedule2.getUser())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(jsonPath("$", is(false)));
-    }
-
-    @Test
-    public void createSchedule_success() throws Exception {
+    void createSchedule_success() throws Exception {
         var newRecord = new Schedule();
         newRecord.setTitle(schedule1.getTitle());
         newRecord.setUser(schedule1.getUser());
@@ -157,7 +145,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void updateSchedule_success() throws Exception {
+    void updateSchedule_success() throws Exception {
         var updatedRecord = new Schedule();
         updatedRecord.setTitle("Test3");
         updatedRecord.setUser(schedule1.getUser());
@@ -182,7 +170,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void updateScheduleRecord_fail() throws Exception {
+    void updateScheduleRecord_fail() throws Exception {
         var updatedRecord = new Schedule();
         updatedRecord.setTitle("Test3");
         updatedRecord.setUser(schedule1.getUser());
@@ -204,7 +192,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void deleteSchedule_success() throws Exception {
+    void deleteSchedule_success() throws Exception {
         Mockito.when(scheduleService.getSchedule(schedule2.getId())).thenReturn(Optional.of(schedule2));
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -214,7 +202,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void deleteSchedule_fail() throws Exception {
+    void deleteSchedule_fail() throws Exception {
         Mockito.when(scheduleService.getSchedule(schedule2.getId())).thenReturn(Optional.of(schedule2));
 
         mockMvc.perform(MockMvcRequestBuilders
