@@ -73,7 +73,7 @@ public class ScheduleController {
                     else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 })
                 .exceptionallyAsync(ex -> {
-                    System.err.println("Error delete: " + ex.getMessage());
+                    System.out.println("Error delete: " + ex.getMessage());
                     return null;
                 });
         return ResponseEntity.status(HttpStatus.OK).build();
