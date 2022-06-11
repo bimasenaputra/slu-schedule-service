@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class ScheduleTest {
+class ScheduleTest {
     @Mock
     private ScheduleRepository scheduleRepository;
 
@@ -37,27 +37,27 @@ public class ScheduleTest {
     }
 
     @Test
-    public void start_time_format_iso_8601() {
+    void start_time_format_iso_8601() {
         assertTrue(newschedule.getStartTime().matches(ISO_8601_REGEX));
     }
 
     @Test
-    public void end_time_format_iso_8601() {
+    void end_time_format_iso_8601() {
         assertTrue(newschedule.getEndTime().matches(ISO_8601_REGEX));
     }
 
     @Test
-    public void start_loc_not_empty() {
+    void start_loc_not_empty() {
         assertFalse(newschedule.getStartingLoc().isEmpty());
     }
 
     @Test
-    public void destination_not_empty() {
+    void destination_not_empty() {
         assertFalse(newschedule.getDestination().isEmpty());
     }
 
     @Test
-    public void desc_can_be_empty() {
+    void desc_can_be_empty() {
         assertTrue(newschedule.getDesc().isEmpty());
     }
 }

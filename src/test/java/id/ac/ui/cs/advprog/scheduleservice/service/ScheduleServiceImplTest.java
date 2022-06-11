@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ScheduleServiceImplTest {
+class ScheduleServiceImplTest {
     @Mock
     private ScheduleRepository scheduleRepository;
 
@@ -43,7 +43,7 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void createScheduleTest() {
+    void createScheduleTest() {
         Schedule schedule = new Schedule();
         schedule.setTitle("Test");
         schedule.setUser("testestest");
@@ -58,7 +58,7 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void getSchedulesTest() throws Exception {
+    void getSchedulesTest() throws Exception {
         Iterable<Schedule> scheduleList = scheduleRepository.findAll();
         lenient().when(scheduleService.getSchedules()).thenReturn(scheduleList);
         Iterable<Schedule> scheduleListResult = scheduleService.getSchedules();
@@ -66,14 +66,14 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void getScheduleByIdTest() {
+    void getScheduleByIdTest() {
         lenient().when(scheduleService.getSchedule(newschedule.getId())).thenReturn(Optional.of(newschedule));
         Optional<Schedule> schedule = scheduleService.getSchedule(newschedule.getId());
         assertEquals(schedule.get().getId(), newschedule.getId());
     }
 
     @Test
-    public void getUserSchedulesTest() {
+    void getUserSchedulesTest() {
         List<Schedule> schedulesMock = new ArrayList<>();
         Schedule scheduleMock = new Schedule();
         String uid = anyString();
@@ -85,14 +85,14 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void deleteScheduleTest(){
+    void deleteScheduleTest(){
         Schedule scheduleMock = new Schedule(9999L,"id","title","startTime","endTime","startingLoc","destination","desc");
         scheduleService.deleteSchedule(scheduleMock);
         verify(scheduleRepository).delete(scheduleMock);
     }
 
     @Test
-    public void updateScheduleTest() {
+    void updateScheduleTest() {
         String pastTitle = newschedule.getTitle();
         String newTitle = "Test Update";
         newschedule.setTitle(newTitle);
@@ -105,11 +105,11 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void checkUserScheduleTimeTest() {
+    void checkUserScheduleTimeTest() {
         String startTime = "2022-05-10T17:02";
         String uid = "testestest";
         boolean result = scheduleService.checkUserScheduleTime(startTime, uid);
-        assertEquals(result, true);
+        assertEquals(true, result);
 
     }
 }
